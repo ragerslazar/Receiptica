@@ -2,10 +2,16 @@ import {id, secret} from "../JS/app_creds.js";
 var API_TOKEN = "https://accounts.spotify.com/api/token"
 var redirect_uri = 'http://localhost/projets/Receiptica/src/redirect.html';
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    onPageLoad();
+if (window.location.href.includes(redirect_uri)) {
+  onPageLoad()
+  document.getElementById("searchBar").addEventListener('input', function() {
+    search_artist();
 });
+  document.getElementById("btnTop1").addEventListener("click", function() {
+    document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = "";
+    followedArtist(localStorage.getItem("access_token"));
+  });
+}
 
 const generateRandomString = (length) => {
     let result = '';
@@ -86,12 +92,6 @@ function getAccessToken(code) {
       };
     xhr.send("grant_type=authorization_code&code=" + code + "&redirect_uri=" + encodeURI(redirect_uri) + "&client_id=" + id + "&client_secret=" + secret);
 };
-
-document.getElementById("btnTop1").addEventListener("click", function() {
-    document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = "";
-    followedArtist(localStorage.getItem("access_token"));
-}) 
-
 
 // Et ensuite avec le access_token, on accède aux différentes ressources !
 function followedArtist(access_token) {
@@ -186,10 +186,6 @@ function topArtist(access_token) {
   };
   xhr.send();
 }
-
-document.getElementById("searchBar").addEventListener('input', function() {
-    search_artist();
-});
 
 function search_artist() {
     var table = document.getElementById('tableArtist');
