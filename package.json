@@ -1,0 +1,15 @@
+{
+  "name": "receiptica",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "node ."
+  },
+  "keywords": [],
+  "author": "Ragers Lazar",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "nodejs": "^0.0.0"
+  }
+}
