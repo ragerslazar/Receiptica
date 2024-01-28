@@ -20,7 +20,6 @@ html {
 	        animation-timing-function: ease-in;
 	-webkit-animation-duration: 0.5s;
 	        animation-duration: 0.5s;
-	position: relative;
 	min-height: 100%;
 }
 
@@ -50,6 +49,7 @@ img, video, svg {
 body {
 	background-color: white;
     margin: 0;
+	position: relative;
     min-height: 100dvh;
 }
 
@@ -111,6 +111,37 @@ main#mRedirect {
 	align-items: center;
 }
 
+@media screen and (min-width: 279px) and (max-width: 480px) { /* Phone */
+	.navbar-nav .nav-item:nth-child(1) {
+		margin-bottom: 1%;
+	}	
+	#spotifyButton, #soundcloudButton {
+		padding: 0;
+	}
+	.display-1 {
+		margin: 3% 1% 0 1%;
+		font-size: 30px;
+		text-align: center;
+	}
+}
+
+@media screen and (min-width: 481px) and (max-width: 1024px) { /* Tablet */
+	.navbar-nav .nav-item:nth-child(1) {
+		margin-bottom: 1%;
+	}	
+	#spotifyButton, #soundcloudButton {
+		padding: 0;
+	}
+	.display-1 {
+		margin: 3% 1% 0 1%;
+		font-size: 50px;
+		text-align: center;
+	}
+
+	th .row {
+		vertical-align: middle;
+	}
+}
 
 #userInfo {
 	background-color: #1DB954;
@@ -258,17 +289,12 @@ tbody td:nth-child(1), td:nth-child(3) {
 	}
 }
 
-.imgStack {
-	gap: 30px;
-}
-
 /* Footer */
 
 footer {
 	background-color: #1DB954;
-	position: absolute;
 	bottom: 0;
-	max-height: 20%;
+	position: absolute;
 	width: 100%;
 	color: white;
 	font-family: 'Nunito', sans-serif;
