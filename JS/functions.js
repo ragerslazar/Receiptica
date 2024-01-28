@@ -7,10 +7,16 @@ if (window.location.href.includes(redirect_uri)) {
   document.getElementById("searchBar").addEventListener('input', function() {
     search_artist();
 });
+
   document.getElementById("btnTop1").addEventListener("click", function() {
     document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = "";
     followedArtist(localStorage.getItem("access_token"));
   });
+
+  document.getElementById("btnTop3").addEventListener('click', function() {
+    document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = "";
+    topArtist(localStorage.getItem("access_token"));
+});
 }
 
 const generateRandomString = (length) => {
@@ -172,16 +178,35 @@ function profile(access_token) {
 }
 
 function topArtist(access_token) {
-  var url = "https://api.spotify.com/v1/me/top/artists?time_range=long_term&offset=0&limit=1"
-
+  var url = "https://api.spotify.com/v1/me/top/artists?time_range=long_term&offset=0&limit=10"
+  var topArtistCount = 1;
+  let cell1 = "";
+  let cell2 = "";
+  let cell3 = "";
   let xhr = new XMLHttpRequest();
   xhr.open("GET", url);
   xhr.setRequestHeader("Authorization", "Bearer " + access_token)
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-      console.log("Artists top: \n" + xhr.response)
       var json = JSON.parse(xhr.response)
+      var tbodyRef = document.getElementById('tableArtist').getElementsByTagName('tbody')[0];
+      if (json.items.length != 0 ) {
+        for (var i = 0; i < json.items.length; i++) {
+          var topArtistImage = json.items[i].images[2].url;
+          let row = tbodyRef.insertRow();
+          cell1 = row.insertCell(0);
+          cell2 = row.insertCell(1);
+          cell3 = row.insertCell(2);
+
+          cell1.innerHTML = topArtistCount;
+          cell2.innerHTML = "<img src=\"" + topArtistImage + "\"/>"  + "<p id=\"fArtist\">" + json.items[i].name + "</p>";
+          cell3.innerHTML = json.items[i].genres;
+          topArtistCount++;
+        }
+      } else {
+        alert("User does not have any top artists.")
+      }
     }
   };
   xhr.send();
