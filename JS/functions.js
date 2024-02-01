@@ -13,6 +13,11 @@ if (window.location.href.includes(redirect_uri)) {
     followedArtist(localStorage.getItem("access_token"));
   });
 
+  document.getElementById("btnTop2").addEventListener('click', function() {
+    document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = "";
+    topTrack(localStorage.getItem("access_token"));
+});
+
   document.getElementById("btnTop3").addEventListener('click', function() {
     document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = "";
     topArtist(localStorage.getItem("access_token"));
@@ -117,6 +122,7 @@ function followedArtist(access_token) {
         var json = JSON.parse(xhr.response);
 
         var tbodyRef = document.getElementById('tableArtist').getElementsByTagName('tbody')[0];
+        let thirdTh = document.getElementsByTagName("th")[2];
         
         if (json.artists.items.length != 0) {
           for (var i = 0; i < json.artists.items.length; i++) {
@@ -132,12 +138,13 @@ function followedArtist(access_token) {
               cell2.innerHTML = "The artist " + json.artists.items[i].name + " has no profile picture.";
             } else {
               image_artist = json.artists.items[i].images[0].url;
-              cell2.innerHTML = "<img src=\"" + image_artist + "\" width=150px height=160px>"  + "<p id=\"fArtist\">" + followed_artist + "</p>";
+              cell2.innerHTML = "<img src=\"" + image_artist + "\" width=300px height=300px>"  + "<p id=\"fArtist\">" + followed_artist + "</p>";
             }
             artistCount++;
+            thirdTh.innerHTML = "<b>Genre</b>";
             //console.log(json.artists.items[1].images[0].url);
             cell1.innerHTML = "<b>" + artistCount + "</b>";
-            cell3.innerHTML = json.artists.items[i].genres; 
+            cell3.innerHTML = json.artists.items[i].genres[0]; 
           }
         } else {
           alert("User does not follow any artists.")
@@ -160,18 +167,58 @@ function topArtist(access_token) {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       var json = JSON.parse(xhr.response)
       var tbodyRef = document.getElementById('tableArtist').getElementsByTagName('tbody')[0];
+      let thirdTh = document.getElementsByTagName("th")[2];
       if (json.items.length != 0 ) {
         for (var i = 0; i < json.items.length; i++) {
-          var topArtistImage = json.items[i].images[2].url;
+          var topArtistImage = json.items[i].images[1].url;
           let row = tbodyRef.insertRow();
           cell1 = row.insertCell(0);
           cell2 = row.insertCell(1);
           cell3 = row.insertCell(2);
 
           topArtistCount++;
+          thirdTh.innerHTML = "<b>Genre</b>";
           cell1.innerHTML = topArtistCount;
-          cell2.innerHTML = "<img src=\"" + topArtistImage + "\"/>"  + "<p id=\"fArtist\">" + json.items[i].name + "</p>";
-          cell3.innerHTML = json.items[i].genres;
+          cell2.innerHTML = "<img src=\"" + topArtistImage + "\" width=300px height=300px/>"  + "<p id=\"fArtist\">" + json.items[i].name + "</p>";
+          cell3.innerHTML = json.items[i].genres[0];
+
+        }
+      } else {
+        alert("User does not have any top artists.")
+      }
+    }
+  };
+  xhr.send();
+}
+
+function topTrack(access_token) {
+  var url = "https://api.spotify.com/v1/me/top/tracks?time_range=long_term&offset=0&limit=10"
+  var topTrackCount = 0;
+  let cell1 = "";
+  let cell2 = "";
+  let cell3 = "";
+  let xhr = new XMLHttpRequest();
+  xhr.open("GET", url);
+  xhr.setRequestHeader("Authorization", "Bearer " + access_token)
+
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+      var json = JSON.parse(xhr.response)
+      var tbodyRef = document.getElementById('tableArtist').getElementsByTagName('tbody')[0];
+      let thirdTh = document.getElementsByTagName("th")[2];
+      if (json.items.length != 0 ) {
+        for (var i = 0; i < json.items.length; i++) {
+          var topTrackImage = json.items[i].album.images[1].url;
+          let row = tbodyRef.insertRow();
+          cell1 = row.insertCell(0);
+          cell2 = row.insertCell(1);
+          cell3 = row.insertCell(2);
+
+          thirdTh.innerHTML = "<b>Track Type</b>";
+          topTrackCount++;
+          cell1.innerHTML = topTrackCount;
+          cell2.innerHTML = "<img src=\"" + topTrackImage + "\"/>"  + "<br><p id=\"fArtist\">" + "<iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/" + json.items[i].id + "?utm_source=generator\" width=\"23%\" height=\"152\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\" loading=\"lazy\"></iframe> <br>" + json.items[i].artists[0].name + "<br>" + json.items[i].name + "</p>";
+          cell3.innerHTML = json.items[i].album.album_type;
 
         }
       } else {
