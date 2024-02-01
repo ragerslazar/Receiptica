@@ -90,7 +90,6 @@ function getAccessToken(code) {
           localStorage.setItem("access_token", access_token);
           profile(access_token)
           followedArtist(access_token)
-          topArtist(access_token)
 
           return access_token;
         }
@@ -147,6 +146,41 @@ function followedArtist(access_token) {
     };
   xhr.send();
 }
+function topArtist(access_token) {
+  var url = "https://api.spotify.com/v1/me/top/artists?time_range=long_term&offset=0&limit=10"
+  var topArtistCount = 0;
+  let cell1 = "";
+  let cell2 = "";
+  let cell3 = "";
+  let xhr = new XMLHttpRequest();
+  xhr.open("GET", url);
+  xhr.setRequestHeader("Authorization", "Bearer " + access_token)
+
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+      var json = JSON.parse(xhr.response)
+      var tbodyRef = document.getElementById('tableArtist').getElementsByTagName('tbody')[0];
+      if (json.items.length != 0 ) {
+        for (var i = 0; i < json.items.length; i++) {
+          var topArtistImage = json.items[i].images[2].url;
+          let row = tbodyRef.insertRow();
+          cell1 = row.insertCell(0);
+          cell2 = row.insertCell(1);
+          cell3 = row.insertCell(2);
+
+          topArtistCount++;
+          cell1.innerHTML = topArtistCount;
+          cell2.innerHTML = "<img src=\"" + topArtistImage + "\"/>"  + "<p id=\"fArtist\">" + json.items[i].name + "</p>";
+          cell3.innerHTML = json.items[i].genres;
+
+        }
+      } else {
+        alert("User does not have any top artists.")
+      }
+    }
+  };
+  xhr.send();
+}
 
 function profile(access_token) {
   var url = "https://api.spotify.com/v1/me"
@@ -177,40 +211,7 @@ function profile(access_token) {
   xhr.send();
 }
 
-function topArtist(access_token) {
-  var url = "https://api.spotify.com/v1/me/top/artists?time_range=long_term&offset=0&limit=10"
-  var topArtistCount = 1;
-  let cell1 = "";
-  let cell2 = "";
-  let cell3 = "";
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET", url);
-  xhr.setRequestHeader("Authorization", "Bearer " + access_token)
 
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-      var json = JSON.parse(xhr.response)
-      var tbodyRef = document.getElementById('tableArtist').getElementsByTagName('tbody')[0];
-      if (json.items.length != 0 ) {
-        for (var i = 0; i < json.items.length; i++) {
-          var topArtistImage = json.items[i].images[2].url;
-          let row = tbodyRef.insertRow();
-          cell1 = row.insertCell(0);
-          cell2 = row.insertCell(1);
-          cell3 = row.insertCell(2);
-
-          cell1.innerHTML = topArtistCount;
-          cell2.innerHTML = "<img src=\"" + topArtistImage + "\"/>"  + "<p id=\"fArtist\">" + json.items[i].name + "</p>";
-          cell3.innerHTML = json.items[i].genres;
-          topArtistCount++;
-        }
-      } else {
-        alert("User does not have any top artists.")
-      }
-    }
-  };
-  xhr.send();
-}
 
 function search_artist() {
     var table = document.getElementById('tableArtist');
