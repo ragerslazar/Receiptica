@@ -153,6 +153,7 @@ function followedArtist(access_token) {
     };
   xhr.send();
 }
+
 function topArtist(access_token) {
   var url = "https://api.spotify.com/v1/me/top/artists?time_range=long_term&offset=0&limit=10"
   var topArtistCount = 0;
@@ -217,12 +218,12 @@ function topTrack(access_token) {
           thirdTh.innerHTML = "<b>Track Type</b>";
           topTrackCount++;
           cell1.innerHTML = topTrackCount;
-          cell2.innerHTML = "<img src=\"" + topTrackImage + "\"/>"  + "<br><p id=\"fArtist\">" + "<iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/" + json.items[i].id + "?utm_source=generator\" width=\"23%\" height=\"152\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\" loading=\"lazy\"></iframe> <br>" + json.items[i].artists[0].name + "<br>" + json.items[i].name + "</p>";
+          cell2.innerHTML = "<img src=\"" + topTrackImage + "\" id=\"topTrackImage\"/>" + "<p> <iframe style=\"border-radius:12px\" src=\"https://open.spotify.com/embed/track/" + json.items[i].id + "?utm_source=generator\" width=\"22.5%\" height=\"152\" frameBorder=\"0\" allowfullscreen=\"\" allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\" loading=\"lazy\"></iframe></p> <p id=\"fArtist\">" +  json.items[i].artists[0].name + "</p> <p>" + json.items[i].name + "</p>";
           cell3.innerHTML = json.items[i].album.album_type;
 
         }
       } else {
-        alert("User does not have any top artists.")
+        alert("User does not have any top tracks.")
       }
     }
   };
@@ -261,25 +262,25 @@ function profile(access_token) {
 
 
 function search_artist() {
-    var table = document.getElementById('tableArtist');
-    let input = document.getElementById("searchBar").value;
-    try {
-      for (var r = 0, n = table.rows.length; r < n; r++) {
-        for (var c = 0, m = table.rows[r].cells.length; c < m; c++) {
-          if (input.toLocaleLowerCase().includes(table.rows[r].cells[1].innerText.toLocaleLowerCase())) {
-            document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = table.rows[r].innerHTML;
-            followedArtist(access_token);
-          } else if (input === "") {
-            document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = ""
-          } else {
-            console.log("No match.");
-          }
+  var table = document.getElementById('tableArtist');
+  let input = document.getElementById("searchBar").value;
+  try {
+    for (var r = 0, n = table.rows.length; r < n; r++) {
+      for (var c = 0, m = table.rows[r].cells.length; c < m; c++) {
+        if (input.toLocaleLowerCase().includes(table.rows[r].cells[1].innerText.toLocaleLowerCase())) {
+          document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = table.rows[r].innerHTML;
+          followedArtist(access_token);
+        } else if (input === "") {
+          document.getElementById('tableArtist').getElementsByTagName('tbody')[0].innerHTML = ""
+        } else {
+          console.log("No match.");
         }
       }
-    } catch (e) {
-        if (e instanceof TypeError) {
-          console.log("Table already empty !")
-          followedArtist(localStorage.getItem("access_token"));
-      }
+    }
+  } catch (e) {
+      if (e instanceof TypeError) {
+        console.log("Table already empty !")
+        followedArtist(localStorage.getItem("access_token"));
     }
   }
+}
